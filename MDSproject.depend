@@ -1,0 +1,41 @@
+# depslib dependency file v1.0
+1584205422 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\main.cpp
+	<tchar.h>
+	<windows.h>
+
+1633289629 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\main.c
+	"defines.h"
+	"IFTextViewer/IFTextViewer.h"
+
+1633098872 i:\rushan\documents\projects\cb projects\interface\mdsproject\iftextviewer.h
+
+1633288428 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\iftextviewer\iftextviewer.c
+	"IFTextViewer.h"
+	"../TextData/TextData.h"
+	"../TextAppearance/TextAppearance.h"
+
+1633164971 i:\rushan\documents\projects\cb projects\interface\mdsproject\iftextviewer\iftextviewer.h
+	"../defines.h"
+
+1633289882 i:\rushan\documents\projects\cb projects\interface\mdsproject\defines.h
+	<stdlib.h>
+	<crtdbg.h>
+	<tchar.h>
+	<windows.h>
+	<stdio.h>
+
+1633285522 i:\rushan\documents\projects\cb projects\interface\mdsproject\textdata\textdata.h
+	"../defines.h"
+
+1633162321 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\fontmanager\fontmanager.c
+
+1633289709 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\textappearance\textappearance.c
+	"TextAppearance.h"
+
+1633285945 source:i:\rushan\documents\projects\cb projects\interface\mdsproject\textdata\textdata.c
+	"TextData.h"
+
+1633287688 i:\rushan\documents\projects\cb projects\interface\mdsproject\textappearance\textappearance.h
+	"../defines.h"
+	"../TextData/TextData.h"
+
