@@ -2,7 +2,7 @@
 
 int _MyDebugPrintln(const char* str)
 {
-    return printf("%s", str);
+    //return printf("%s\n", str);
 }
 
 #include "IFTextViewer/IFTextViewer.h"
@@ -48,7 +48,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
            0,                   /* Extended possibilities for variation */
            szClassName,         /* Class name */
            _T("Interfaces: Text Viewer"),       /* Title Text */
-           WS_OVERLAPPEDWINDOW, /* default window */
+           WS_OVERLAPPEDWINDOW | WS_VSCROLL, /* default window with scroll */
            CW_USEDEFAULT,       /* Windows decides the position */
            CW_USEDEFAULT,       /* where the window ends up on the screen */
            544,                 /* The programs width */
@@ -91,6 +91,7 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             if (pInstanceData == NULL)
             {
                 PostQuitMessage (0);
+                break;
             }
             IFTextViewer_CreateMassageHandler(pInstanceData, hwnd, wParam, lParam);
             break;

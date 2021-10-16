@@ -51,32 +51,105 @@ void IFTextViewer_CreateMassageHandler(IFTextViewer_InstanceData* This, HWND hwn
 
 void IFTextViewer_SizeMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
-
+    if (!This->isInit)
+        return;
+    if (0 != TextAppearance_Resize(This->textAppearance, This->hwnd, LOWORD(lParam), HIWORD(lParam)))
+    {
+        IFTextViewer_DestroyInstanceData(This);
+        PostQuitMessage (0);
+    }
 }
 
 void IFTextViewer_PaintMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
+    if (!This->isInit)
+        return;
     TextAppearance_Paint(This->textAppearance, This->hwnd);
 }
 
 void IFTextViewer_VScrollMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
-
+    if (!This->isInit)
+        return;
+    switch (LOWORD(wParam))
+    {
+        case SB_THUMBPOSITION:
+        case SB_THUMBTRACK:
+            TextAppearance_VScrollToPosition(This->textAppearance, This->hwnd, HIWORD(wParam));
+            break;
+        case SB_LINEDOWN:
+            TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, 1);
+            break;
+        case SB_LINEUP:
+            TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, -1);
+            break;
+        default:
+            break;
+    }
 }
 
 void IFTextViewer_HScrollMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
-
+    if (!This->isInit)
+        return;
+    switch (LOWORD(wParam))
+    {
+        case SB_THUMBPOSITION:
+        case SB_THUMBTRACK:
+            TextAppearance_HScrollToPosition(This->textAppearance, This->hwnd, HIWORD(wParam));
+            break;
+        case SB_LINEDOWN:
+            TextAppearance_HScrollByDelta(This->textAppearance, This->hwnd, 1);
+            break;
+        case SB_LINEUP:
+            TextAppearance_HScrollByDelta(This->textAppearance, This->hwnd, -1);
+            break;
+        default:
+            break;
+    }
 }
 
 void IFTextViewer_MousewheelMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
-
+    if (!This->isInit)
+        return;
+    long zDelta = -GET_WHEEL_DELTA_WPARAM(wParam) / 120;
+    TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, zDelta);
 }
 
 void IFTextViewer_KeyDownMassageHandler(IFTextViewer_InstanceData* This, WPARAM wParam, LPARAM lParam)
 {
-
+    if (!This->isInit)
+        return;
+    switch (wParam)
+    {
+        case VK_UP:
+            TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, -1);
+            break;
+        case VK_DOWN:
+            TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, 1);
+            break;
+        case VK_LEFT:
+            TextAppearance_HScrollByDelta(This->textAppearance, This->hwnd, -1);
+            break;
+        case VK_RIGHT:
+            TextAppearance_HScrollByDelta(This->textAppearance, This->hwnd, 1);
+            break;
+        case VK_PRIOR:
+            TextAppearance_VScrollByDelta(This->textAppearance, This-> hwnd, -(This->textAppearance->screenHeigthInLines - 1));
+            break;
+        case VK_NEXT:
+            TextAppearance_VScrollByDelta(This->textAppearance, This->hwnd, This->textAppearance->screenHeigthInLines - 1);
+            break;
+        case VK_TAB:
+            TextAppearance_SetMode(This->textAppearance, This-> hwnd, TEXT_APPEARANCE_UNFORMATED);
+            break;
+        case VK_SHIFT:
+            TextAppearance_SetMode(This->textAppearance, This-> hwnd, TEXT_APPEARANCE_FORMATED);
+            break;
+        default:
+            break;
+    }
 }
 
 void IFTextViewer_DestroyInstanceData(IFTextViewer_InstanceData* This)

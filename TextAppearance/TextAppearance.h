@@ -4,6 +4,10 @@
 #include "../defines.h"
 #include "../TextData/TextData.h"
 
+#define MAX_SCROLL_VALUE 65535
+
+
+
 typedef struct _ScreenLine
 {
     int textLineIndex;
@@ -12,28 +16,52 @@ typedef struct _ScreenLine
     struct _ScreenLine* nextLine;
 } ScreenLine;
 
-typedef struct
+typedef struct _TextAppearance TextAppearance;
+
+typedef void (*SetNextLineFunc)(TextAppearance* This, ScreenLine* curLine, ScreenLine* nextLine);
+typedef void (*SetPrevLineFunc)(TextAppearance* This, ScreenLine* prevLine, ScreenLine* curLine);
+
+struct _TextAppearance
 {
     HFONT hFont;
+    TextData* textData;
+    enum TEXT_APPEARANCE_MODE
+    {
+        TEXT_APPEARANCE_FORMATED,
+        TEXT_APPEARANCE_UNFORMATED,
+        TEXT_APPEARANCE_NONE
+    } mode;
+    SetNextLineFunc setNextLine;
+    SetNextLineFunc setPrevLine;
+    ScreenLine* firstScreenLine;
     unsigned long charWidth;
     unsigned long charHeigth;
     unsigned long betweenLinesDist;
-    ScreenLine* firstScreenLine;
     unsigned long screenWidthInChars;
     unsigned long screenHeigthInLines;
-    int screenLinesCount;
-    TextData* textData;
+    unsigned long verticalMaxPosition;
+    unsigned long horizontalMaxPosition;
+    unsigned long verticalPosition;
+    unsigned long horizontalPosition;
 
-} TextAppearance;
+};
 
 TextAppearance* TextAppearance_Get(TextData* textData, HWND hwnd);
 
 void TextAppearance_Destroy(TextAppearance* This);
 
-int TextAppearance_Resize(TextAppearance* This, long windowWidth, long windowHeigth);
+int TextAppearance_Resize(TextAppearance* This, HWND hwnd, long windowWidth, long windowHeigth);
 
-int TextAppearance_VScroll(TextAppearance* This, long delta);
+int TextAppearance_VScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
 
-int TextAppearance_Paint(TextAppearance* This, HWND hwnd);
+int TextAppearance_VScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
+
+int TextAppearance_HScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
+
+int TextAppearance_HScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
+
+int TextAppearance_SetMode(TextAppearance* This, HWND hwnd, enum TEXT_APPEARANCE_MODE mode);
+
+void TextAppearance_Paint(TextAppearance* This, HWND hwnd);
 
 #endif // __IF_TEXT_APPEARANCE_H_
