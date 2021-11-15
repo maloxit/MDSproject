@@ -1,8 +1,31 @@
 #include "defines.h"
-
+#include "menu_ids.h"
 int _MyDebugPrintln(const char* str)
 {
-    //return printf("%s\n", str);
+    //printf("%s\n", str);
+    return 0;
+}
+
+int LogerPrintRETC(RETC rc)
+{
+    switch(rc)
+    {
+    case RETC_SUCCESS:
+    printf("Return Code SUCCESS.");
+        break;
+    case RETC_MEMALLOC_ERROR:
+    printf("Memory allocation error.");
+        break;
+    case RETC_INPUT_ERROR:
+    printf("Failed to read/open input file.");
+        break;
+    case RETC_LOGIC_ERROR:
+    printf("Some logic error in program code.");
+        break;
+    default:
+    printf("Unlisted Return Code.");
+    }
+    return 0;
 }
 
 #include "IFTextViewer/IFTextViewer.h"
@@ -33,7 +56,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.hIcon = LoadIcon (NULL, IDI_APPLICATION);
     wincl.hIconSm = LoadIcon (NULL, IDI_APPLICATION);
     wincl.hCursor = LoadCursor (NULL, IDC_ARROW);
-    wincl.lpszMenuName = NULL;                 /* No menu */
+    wincl.lpszMenuName = MAKEINTRESOURCE(ID_MYMENU);
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
     wincl.cbWndExtra = 0;                      /* structure or the window instance */
     /* Use Windows's default color as the background of the window */
@@ -83,6 +106,9 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     static IFTextViewer_InstanceData* pInstanceData = NULL;
+
+    IFTextViewer_MessageHandler* handler = NULL;
+
     switch (message)                  /* handle the messages */
     {
         case WM_CREATE:
@@ -93,39 +119,59 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
                 PostQuitMessage (0);
                 break;
             }
-            IFTextViewer_CreateMassageHandler(pInstanceData, hwnd, wParam, lParam);
+            IFTextViewer_CreateMessageHandler(pInstanceData, hwnd, wParam, lParam);
+            if (!IFTextViewer_IsInit(pInstanceData))
+            {
+                IFTextViewer_DestroyInstanceData(pInstanceData, hwnd);
+                PostQuitMessage (0);
+            }
             break;
         case WM_SIZE:
             _MyDebugPrintln("WM_SIZE\n");
-            IFTextViewer_SizeMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_SizeMessageHandler;
             break;
         case WM_PAINT:
             _MyDebugPrintln("WM_PAINT\n");
-            IFTextViewer_PaintMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_PaintMessageHandler;
             break;
         case WM_VSCROLL:
             _MyDebugPrintln("WM_VSCROLL\n");
-            IFTextViewer_VScrollMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_VScrollMessageHandler;
             break;
         case WM_HSCROLL:
             _MyDebugPrintln("WM_HSCROLL\n");
-            IFTextViewer_HScrollMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_HScrollMessageHandler;
             break;
         case WM_MOUSEWHEEL:
             _MyDebugPrintln("WM_MOUSEWHEEL\n");
-            IFTextViewer_MousewheelMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_MousewheelMessageHandler;
             break;
         case WM_KEYDOWN:
             _MyDebugPrintln("WM_KEYDOWN\n");
-            IFTextViewer_KeyDownMassageHandler(pInstanceData, wParam, lParam);
+            handler = IFTextViewer_KeyDownMessageHandler;
+            break;
+        case WM_COMMAND:
+            _MyDebugPrintln("WM_COMMAND\n");
+            handler = IFTextViewer_CommandMessageHandler;
             break;
         case WM_DESTROY:
             _MyDebugPrintln("WM_DESTROY\n");
-            IFTextViewer_DestroyInstanceData(pInstanceData);
+            IFTextViewer_DestroyInstanceData(pInstanceData, hwnd);
             PostQuitMessage (0);       /* send a WM_QUIT to the message queue */
             break;
         default:                      /* for messages that we don't deal with */
             return DefWindowProc (hwnd, message, wParam, lParam);
+    }
+
+    if (handler != NULL && IFTextViewer_IsInit(pInstanceData))
+    {
+        RETC rc = handler(pInstanceData, hwnd, wParam, lParam);
+        if (rc != RETC_SUCCESS)
+        {
+            LogerPrintRETC(rc);
+            IFTextViewer_DestroyInstanceData(pInstanceData, hwnd);
+            PostQuitMessage (0);
+        }
     }
 
     return 0;

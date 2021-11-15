@@ -39,3 +39,44 @@
 	"../defines.h"
 	"../TextData/TextData.h"
 
+1633162321 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\fontmanager\fontmanager.c
+
+1635861978 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\iftextviewer\iftextviewer.c
+	"IFTextViewer.h"
+	"../TextData/TextData.h"
+	"../TextAppearance/TextAppearance.h"
+	"../menu_ids.h"
+
+1635856536 i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\iftextviewer\iftextviewer.h
+	"../defines.h"
+
+1635776577 i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\defines.h
+	<stdlib.h>
+	<crtdbg.h>
+	<tchar.h>
+	<windows.h>
+	<stdio.h>
+
+1635858237 i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\textdata\textdata.h
+	"../defines.h"
+
+1635860382 i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\textappearance\textappearance.h
+	"../defines.h"
+	"../TextData/TextData.h"
+
+1635855750 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\main.c
+	"defines.h"
+	"menu_ids.h"
+	"IFTextViewer/IFTextViewer.h"
+
+1635858092 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\textdata\textdata.c
+	"TextData.h"
+
+1635861379 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\textappearance\textappearance.c
+	"TextAppearance.h"
+
+1635803666 i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\menu_ids.h
+
+1635803777 source:i:\rushan\documents\projects\cbprojects\interface\mdsproject\mdsproject\menu.rc
+	"menu_ids.h"
+

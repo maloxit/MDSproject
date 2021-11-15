@@ -5,6 +5,10 @@
 #include "../TextData/TextData.h"
 
 #define MAX_SCROLL_VALUE 65535
+#define FONT_CHAR_HEIGHT 20
+#define FONT_CHAR_WIDTH 10
+#define FONT_CHAR_WEIGHT 400
+#define FONT_BETWEEN_LINES_DIST 20
 
 
 
@@ -46,21 +50,21 @@ struct _TextAppearance
 
 };
 
-TextAppearance* TextAppearance_Get(TextData* textData, HWND hwnd);
+TextAppearance* TextAppearance_Get(TextData* textData, HWND hwnd, BOOL isFormated);
 
-void TextAppearance_Destroy(TextAppearance* This);
+void TextAppearance_Destroy(TextAppearance** pThis);
 
-int TextAppearance_Resize(TextAppearance* This, HWND hwnd, long windowWidth, long windowHeigth);
+RETC TextAppearance_Resize(TextAppearance* This, HWND hwnd, long windowWidth, long windowHeigth);
 
-int TextAppearance_VScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
+void TextAppearance_VScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
 
-int TextAppearance_VScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
+void TextAppearance_VScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
 
-int TextAppearance_HScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
+void TextAppearance_HScrollToPosition(TextAppearance* This, HWND hwnd, unsigned long position);
 
-int TextAppearance_HScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
+void TextAppearance_HScrollByDelta(TextAppearance* This, HWND hwnd, long delta);
 
-int TextAppearance_SetMode(TextAppearance* This, HWND hwnd, enum TEXT_APPEARANCE_MODE mode);
+RETC TextAppearance_SetMode(TextAppearance* This, HWND hwnd, enum TEXT_APPEARANCE_MODE mode);
 
 void TextAppearance_Paint(TextAppearance* This, HWND hwnd);
 

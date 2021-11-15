@@ -19,6 +19,17 @@
 #define MIN(a, b) (((a) <= (b))?(a):(b))
 
 
+typedef enum _RETC
+{
+    RETC_SUCCESS,
+    RETC_MEMALLOC_ERROR,
+    RETC_INPUT_ERROR,
+    RETC_LOGIC_ERROR,
+} RETC;
+
+
+
 int _MyDebugPrintln(const char* str);
+int LogerPrintRETC(RETC rc);
 
 #endif // __IF_DEFINES_H_

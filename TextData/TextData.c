@@ -1,64 +1,67 @@
 #include "TextData.h"
 
-static int TextData_ReadFromFile(TextData* textData, const char* fileName)
+static RETC TextData_ReadFromFile(TextData* This, const char* fileName)
 {
+    int textSize;
     FILE* file = fopen(fileName, "r");
     if (file == NULL)
     {
-        _MyDebugPrintln("Cannot open file.");
-        return -1;
+        return RETC_INPUT_ERROR;
     }
     fseek(file, 0, SEEK_END);
-    textData->textSize = ftell(file);
+    textSize = ftell(file);
     fseek(file, 0, SEEK_SET);
 
-    textData->textBuffer = (char *)malloc((textData->textSize + 1) * sizeof(char));
-    if (textData->textBuffer == NULL)
+    This->textBuffer = (char *)malloc((textSize + 1) * sizeof(char));
+    if (This->textBuffer == NULL)
     {
-        _MyDebugPrintln("Cannot allocate memory\n");
         fclose(file);
-        return -1;
+        return RETC_MEMALLOC_ERROR;
     }
-    textData->textSize = fread(textData->textBuffer, sizeof(char), textData->textSize, file);
-    textData->textBuffer[textData->textSize] = '\0';
-
+    textSize = fread(This->textBuffer, sizeof(char), textSize, file);
+    This->textBuffer[textSize] = '\0';
+    This->textSize = textSize + 1;
     fclose(file);
-    return 0;
+    return RETC_SUCCESS;
 }
 
-static int TextData_SplitToLines(TextData* textData)
+static RETC TextData_SplitToLines(TextData* This)
 {
     int lineIndex;
     char* ptr;;
-    textData->textLinesCount = 1;
-    for (ptr = textData->textBuffer; *ptr != '\0'; ptr++)
+    This->textLinesCount = 1;
+    for (ptr = This->textBuffer; *ptr != '\0'; ptr++)
     {
         if (*ptr == '\n')
-            textData->textLinesCount++;
+            This->textLinesCount++;
     }
-    textData->textLines = malloc(textData->textLinesCount * sizeof(char*));
-    if (textData->textLines == NULL)
+    This->textLines = malloc(This->textLinesCount * sizeof(char*));
+    if (This->textLines == NULL)
     {
-        return -1;
+        return RETC_MEMALLOC_ERROR;
     }
-    textData->textLineLens = malloc(textData->textLinesCount * sizeof(int));
-    if (textData->textLineLens == NULL)
-    {
-        free(textData->textLines);
-        return -1;
-    }
-    textData->textLines[0] = textData->textBuffer;
-    for (lineIndex = 1, ptr = textData->textBuffer; *ptr != '\0'; ptr++)
+    This->textLines[0] = This->textBuffer;
+    for (lineIndex = 1, ptr = This->textBuffer; *ptr != '\0'; ptr++)
     {
         if (*ptr == '\n')
         {
-            textData->textLineLens[lineIndex - 1] = ptr - textData->textLines[lineIndex - 1];
-            textData->textLines[lineIndex++] = ptr + 1;
+            This->textLines[lineIndex++] = ptr + 1;
         }
     }
-    textData->textLineLens[textData->textLinesCount - 1] = ptr - textData->textLines[textData->textLinesCount - 1];
-    return 0;
+    return RETC_SUCCESS;
 }
+
+int TextData_LineLen(TextData* This, int index)
+{
+    if (index < 0 || index >= This->textLinesCount)
+        return 0;
+    else if (index == This->textLinesCount - 1)
+        return This->textSize - (This->textLines[index] - This->textBuffer) - 1;
+    else
+        return This->textLines[index + 1] - This->textLines[index] - 1;
+}
+
+
 TextData* TextData_Get(const char* fileName)
 {
     TextData* textData = malloc(sizeof(TextData));
@@ -66,12 +69,12 @@ TextData* TextData_Get(const char* fileName)
     {
         return NULL;
     }
-    if (0 != TextData_ReadFromFile(textData, fileName))
+    if (RETC_SUCCESS != TextData_ReadFromFile(textData, fileName))
     {
         free(textData);
         return NULL;
     }
-    if (0 != TextData_SplitToLines(textData))
+    if (RETC_SUCCESS != TextData_SplitToLines(textData))
     {
         free(textData->textBuffer);
         free(textData);
@@ -80,10 +83,12 @@ TextData* TextData_Get(const char* fileName)
     return textData;
 }
 
-void TextData_Destroy(TextData* textData)
+void TextData_Destroy(TextData** pThis)
 {
-    free(textData->textLineLens);
-    free(textData->textLines);
-    free(textData->textBuffer);
-    free(textData);
+    if (pThis == NULL || (*pThis) == NULL)
+        return;
+    free((*pThis)->textLines);
+    free((*pThis)->textBuffer);
+    free((*pThis));
+    (*pThis) = NULL;
 }

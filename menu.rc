@@ -1,0 +1,15 @@
+#include "menu_ids.h"
+
+ID_MYMENU MENU
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Open", IDM_FILE_OPEN
+        MENUITEM "Exit", IDM_FILE_EXIT
+    END
+    POPUP "View"
+    BEGIN
+        MENUITEM "Wrap", IDM_VIEW_WRAP, CHECKED
+    END
+    MENUITEM "About", IDM_ABOUT
+END
